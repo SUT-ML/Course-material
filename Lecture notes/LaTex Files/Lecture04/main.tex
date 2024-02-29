@@ -1,0 +1,157 @@
+\documentclass[12pt]{article}
+\input{etc/cmd}
+
+\begin{document}
+\fontsize{12pt}{14pt}\selectfont
+
+\input{etc/head}
+
+% \begin{abstract}
+% \noindent
+% مقدمات نگرش احتمالاتی به مسئله 
+% \lr{learning}
+% و آشنایی با دو تخمین‌گر 
+% \lr{Maximum-Likelihood (ML)}
+% و
+% \lr{Maximum A Posteriori (MAP)}
+% و سپس بررسی این دیدگاه در رابطه با مسئله 
+% \lr{Regression}
+% \end{abstract}
+
+\section*{\lr{Density Estimation and Generative Approach}}
+\subsection*{مثال}
+\subsubsection*{\lr{Probabilistic Unsupervised Learning}}
+یکی از دسته مسائل یادگیری که پیش تر با آن آشنا شده اید مسائل
+\lr{unsupervised}
+هستند. برای این دسته از مسائل نیز میتوان یک دیدگاه احتمالاتی داشت. برای مثال اگر با دیدگاه احتمالاتی به مسئله خوشه بندی نگاه کنید میتوان فرض کرد که هر کدام از خوشه های ما از توزیع های احتمالاتی پیروی میکنند و با استفاده از داده ها به توزیع مدنظر رسید آنگاه هر دیتای جدیدی را میتوان با استفاده از توزیع هایی که بدست آورده ایم به یکی از خوشه‌ها تخصیص داد.
+
+\includegraphics[width=\textwidth]{figs/GaussianMixtureModel.jpeg}
+
+\subsubsection*{\lr{Generative Approach}}
+دیدگاهی است که در آن فرض میکنیم که در ساختار داده‌ها توزیع 
+\lr{p}
+را داریم و بدنبال یادگرفتن توزیع 
+\lr{p}
+میرویم تا بتوانیم کارهایی از قبیل تولید داده انجام دهیم. 
+\href{http://cs231n.stanford.edu/slides/2017/cs231n_2017_lecture13.pdf}{\lr{more information}}
+
+\subsection*{انواع}
+دو دسته رویکرد برای این نوع تخمین وجود دارد.
+\begin{itemize}
+    \item \lr{parametric}:
+    موردی که فعلا مورد بحث در کورس است و با تخمین پارامترهای توزیع سرکار دارد.
+    \item \lr{non-parametric}
+\end{itemize}
+در 
+\lr{parametric}
+ها نیز دو نوع دیدگاه برای تخمین 
+$\theta$
+وجود دارد بصورتی که دسته ای از افراد یک عدد ثابت را به عنوان پارامتر در نظر میگیرند و حال بدنبال تخمین آن عدد میروند
+(\lr{MLE})
+درصورتی که دسته دیگر آن را 
+\lr{random variable}
+در نظر میگیرند و بدنبال بدست آوردن تخمینی از توزیع آن هستند
+(\lr{MAP, Bayesian Estimator}).
+
+\section*{\lr{MLE}}
+فرض کنید دسته ای از سمپل ها به شکل
+$D = \{x^{(1)}, x^{(2)}, ..., x^{(n)}\}$
+داریم. همچنین فرض کنید خانواده توزیع نرمال را داشته باشیم در شرایطی که واریانس اعضا ثابت باشد و تنها پارامتری که بین اعضا متفاوت است 
+$\mu$
+باشد.
+
+\includegraphics[width=\textwidth]{figs/normalDistMLE.png}
+
+حال بدنبال بهترین توزیع نرمالی هستیم که به این داده ها فیت شود. فرض دیگری که میکنیم 
+\lr{i.i.d}
+بودن مشاهدات است.
+پس داریم.
+\[p(D|\theta) = \prod_{i=1}^{N} p(x^{(i)}|\theta)\]
+و در 
+\lr{MLE}
+بدنبال یافتن مقداری هستیم که این احتمال را بیشینه کند.
+\[\hat{\theta}_{ML} = \underset{\theta}{argmax} \,p(D|\theta)\]
+برای راحت تر کردن محاسبات هم میتوانیم از فرمت لگاریتمی استفاده کنیم و از انجایی که در اینجا بدنبال 
+\lr{argmax}
+گرفتنیم حاصل خود عبارت بالا با لگاریتمش تفاوتی نخواهد داشت.
+\[L(\theta) = ln \,p(D|\theta) = ln \prod_{i = 1}^{N} p(x^{(i)}|\theta) = \Sigma_{i=1}^{N} ln \,p(x^{(i)}|\theta)\]
+\[\hat{\theta}_{ML} = \underset{\theta}{argmax}\,L(\theta) = \underset{\theta}{argmax}\, \Sigma_{i=1}^{N} ln \,p(x^{(i)}|\theta)\]
+
+\includegraphics[width=\textwidth]{figs/Lograithm.png}
+
+\subsection*{مثال گسسته}
+در این مثال فرض کنید که آزمایش 
+\lr{N}
+بار پرتاب یک سکه را داریم بصورتی که 
+\lr{m}
+بار سکه شیر آمده است و بقیه دفعات را خط آمده است.
+پس خانواده توزیع مسئله، توزیع برنولی است که به شکل زیر است.
+\[p(x|\theta) = \theta^x (1 - \theta)^{1-x}\]
+در این مسئله شیر آمدن را ۱ و خط آمدن را ۰ در نظر میگیریم و پارامتر 
+$\theta$
+را نیز معادل احتمال ۱ شدن یک بار پرتاب سکه میگیریم. 
+بدین ترتیب برای آزمایشمان داریم.
+\[p(D|\theta) = \prod_{i=1}^{N} p(x^{(i)}|\theta) = \prod_{i=1}^{N} \theta^{x^{(i)}} (1 - \theta)^{1 - x^{(i)}}\]
+حال از تخمین‌گر استفاده میکنیم.
+\[ln\,p(D|\theta) = \Sigma_{i=1}^{N}ln\,p(x^{(i)}|\theta)
+    = \Sigma_{i=1}^{N} \{x^{(i)}\,ln\,\theta + (1 - x^{(i)})\,ln\,(1 - \theta)\}\]
+حال باید مقدار اپتیمال را بدست آوریم.
+\[\frac{\partial\, ln\,p(D|\theta)}{\partial\theta} = 0 \xrightarrow{}
+    \theta_{ML} = \frac{\Sigma_{i=1}^{N} x^{(i)}}{N} = \frac{m}{N}\]
+\subsection{مثال پیوسته}
+این بار بر روی خانواده توزیع نرمال با ثابت در نظر گرفتن پارامتر واریانس بدنبال تخمینی برای 
+$\mu$
+هستیم.
+\[p(x|\mu) = \frac{1}{\sqrt{2\pi}\sigma}\exp^{-\frac{1}{2\sigma^2}(x - \mu)^2}\]
+\[L(\mu) = ln\,p(x^{(i)}|\mu) = -ln\{\sqrt{2\pi}\sigma\} - \frac{1}{2\sigma^2}(x^{(i)} - \mu)^2\]
+و حال برای بدست اوردن مقدار اپتیمال مشتق میگیریم.
+\[\frac{\partial L(\mu)}{\partial \mu} = 0 \xrightarrow[]{} \frac{\partial}{\partial\mu}(\Sigma_{i=1}^{N} ln\,p(x^{(i)}|\mu)) = 0 \xrightarrow[]{}
+    \Sigma_{i=1}^{N} \frac{1}{\sigma^2}(x^{(i)} - \mu) = 0\]
+نتیجتا
+\[\hat{\mu}_{ML} = \frac{1}{N}\Sigma_{i=1}^{N}x^{(i)}\]
+
+\section*{\lr{MAP}}
+در اینجا علاوه بر فرضیاتی که برای تخمین‌گر 
+\lr{ML}
+داشتیم فرض میکنیم که پارامتر یک متغیر تصادفی است. همچنین 
+\lr{prior distribution}
+آن را نیز داریم.
+حال بدنبال این هستیم تا پارامتر را به نحوی بدست بیاوریم که توزیع 
+\lr{posterior}
+را بیشینه کنیم.
+\[\hat{\theta}_{MAP} = \underset{\theta}{argmax}\, p(\theta | D)\]
+طبق قانون بیز داریم.
+\[p(\theta|D) = \frac{p(D|\theta) \times p(\theta)}{p(D)}\]
+از انجایی که 
+$p(D)$
+وابستگی به پارامتر مدنظر ندارد پس میتوانیم از آن صرفنظر کنیم پس به عبارت زیر میرسیم.
+\[\hat{\theta}_{MAP} = \underset{\theta}{argmax}\,p(D|\theta)p(\theta)\]
+کاری که در این دیدگاه صورت میگیرد به این ترتیب است که با مشاهده سمپل ها و توزیع انها به تغییر توزیع پیشفرض پارامتر میپردازد و بواسطه دیده هایش توزیع را بروز میکند.
+\\
+نکته دیگر اینکه لزوما حاصل تخمین 
+\lr{MAP}
+و 
+\lr{MLE}
+با هم برابر نیستند.
+
+\includegraphics[width=\textwidth]{figs/MLEvsMAP.png}
+
+\subsection*{مثال پرتاب سکه}
+دوباره به این مثال برمیگردیم. همانطور که در بخش قبل داشتیم تابع 
+\lr{likelihood}
+برابر است با 
+\[p(D|\theta) = \prod_{i=1}^{N} \theta^{x^{(i)}} (1 - \theta)^{(1 - x^{(i)})}\]
+و فرض میکنیم که توزیع 
+\lr{prior}
+مان نیز از نوع توزیع بتا است.
+\[p(\theta) = Beta(\theta|\alpha_1, \alpha_0) = \theta^{\alpha_1 - 1}(1 - \theta)^{\alpha_0 -1}\]
+بدین ترتیب برای توزیع 
+\lr{posterior}
+داریم.
+\[= \theta^{m + \alpha_1 - 1}(1 - \theta)^{N - m + \alpha_0 - 1} \xrightarrow[]{} p(\theta|D) = Beta(\theta|\alpha_1^{'}, \alpha_0^{'})\]
+و 
+\[
+\alpha_1' = \alpha_1 + m\]
+\[\alpha_0' = \alpha_0 + N - m
+\]
+\end{document}
