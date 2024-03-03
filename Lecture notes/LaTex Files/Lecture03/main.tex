@@ -102,10 +102,10 @@ $Cost\:function$ }
 
 مثال1: فرض کنید $h$ یک $classifier$ خطی تعریف‌شده باشد به صورت زیر:
 \[
-w=\begin{vmatrix}
+w=\begin{bmatrix}
 -1 \\
 1.5 \\
-\end{vmatrix}
+\end{bmatrix}
 \]
 
 \[
@@ -113,17 +113,17 @@ w_0=3
 \]
 نمودار زیر چندین نقطه را نشان می دهد که توسط $h$ طبقه بندی شده اند. به طور خاص، ما با 2 نقطه زیر کار داریم:
 \[
-x^1 =\begin{vmatrix}
+x^1 =\begin{bmatrix}
 3 \\
 2 \\
-\end{vmatrix}
+\end{bmatrix}
 \]
 
 \[
-x^2 =\begin{vmatrix}
+x^2 =\begin{bmatrix}
 4 \\
 -1 \\
-\end{vmatrix}
+\end{bmatrix}
 \]
 
 \begin{figure}[h]
@@ -226,6 +226,72 @@ w^{(1)}_0=2
 \]
 
 طبقه‌بندی‌کننده جدید (که با خط چین نشان داده می‌شود) اکنون آن نقطه را به درستی طبقه‌بندی می‌کند، اما اکنون در نقطه با برچسب منفی اشتباه می‌کند.
+
+
+
+\subsection{$Pocket\:algorithm$}
+در $feature\:space$ کنونی اگر داده های من خطی جدایی پذیر نباشن $Pocket\:algorithm$ میگه که:
+
+\begin{figure}[h]
+    \centering
+    \includegraphics[width=0.6\textwidth]{PLA.png}
+    \label{fig:}
+\end{figure}
+
+در $Pocket\:algorithm$ میایم یه تعداد $iteration$ محدود میگیریم و هربار یه داده $misclassified$ رو بگیر و $w$ رو آپدیت کن و بهترین را نگه دار.
+به طور کلی ایده $Pocket\:algorithm$ این است که بهترین $w$ را که تا به حال با آن روبرو شده است را نگه می دارد. صرفا یک $heuristic$ هست که میگه که اگر خطی جدایی پذیر نبودن بهترین خط کدوم هست.
+
+
+\subsection{$Projection\:for\:Classification$}
+حال میخواهیم یه جهتی در فضا پیدا کنیم که در صورت $map$ کردم نقاط به روی آن نقاط از هم خوب جدا بشوند.
+\\
+در اشکال 7 و 8 این جهات مناسب نیستند زیرا نقاط از هم به خوبی جدا نشده اند. ولی جهت انتخابی در شکل 9 مناسب است و نقاط به خوبی از هم جدا شده اند.
+\begin{figure}[h]
+    \centering
+    \includegraphics[width=0.4\textwidth]{ClsPrj.png}
+    \caption{استفاده از یکی از محور های برای $mapping$}
+    \label{fig:}
+\end{figure}
+
+\begin{figure}[h]
+    \centering
+    \includegraphics[width=0.4\textwidth]{ClsPrj2.png}
+    \caption{استفاده از یکی از محور های برای $mapping$}
+    \label{fig:}
+\end{figure}
+
+\begin{figure}[h]
+    \centering
+    \includegraphics[width=0.4\textwidth]{ClsPrj3.png}
+    \caption{جهتی مناسب برای $mapping$}
+    \label{fig:}
+\end{figure}
+
+
+\clearpage
+
+ما وقتی میایم و یکی از محور ها را به عنوان جهتمون برای $mapping$ انتخاب میکنیم انگار فقط یکی از $feature$ های نقاط از میان $n$ تا را داریم برای جداسازی استفاده میکنیم در صورتی که میتوان از یک ترکیب خطی از این  $feature$ ها را استفاده کرد و با یک تابع هزینه بدست آورد بهترین جهت کدام است.
+
+\subsubsection{الگوریتم $LDA$}
+یک جهت $w$ داریم که میخواهیم سمپل $x$ را بر روی آن تصویر کنیم که تصویرش میشود $w^T\:x$.که خب هدف یافتن بهترین جهت $w$ است که امیدواریم بتوانیم طبقه بندی دقیق را انجام دهیم
+\\
+\\
+نوتیشن رو هم به این صورت قرار میدهیم که:    
+
+\begin{itemize}
+    \item $J(w)$: این تابع هدف را نشان می دهد که باید $maximize$ شود.
+
+    \item $w$ : این یک بردار وزن است که برای نمایش نقاط داده روی یک خط استفاده می شود.
+    
+    \item $μ_1$و $μ_2$: اینها نشان دهنده میانگین بردارهای دو کلاس هستند که وقتی $mapping$ بر روی $w$ رخ داد یک پریم میگذاریم و میانگین $map$ شده را به صورت پریم دار نمایش میدهیم.
+\end{itemize}
+
+با این اوصاف $measurement$ اینکه چقدر جهت منتخب برای جداسازی مناسب هست رو به صورت زیر تعریف میکنیم:
+\begin{figure}[h]
+    \centering
+    \includegraphics[width=0.55\textwidth]{LDAFrm.png}
+    \label{fig:}
+\end{figure}
 
 \end{document}
 
