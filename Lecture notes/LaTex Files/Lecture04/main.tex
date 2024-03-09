@@ -18,16 +18,22 @@
 % \lr{Regression}
 % \end{abstract}
 
-\section*{\lr{Density Estimation and Generative Approach}}
-\subsection*{مثال}
-\subsubsection*{\lr{Probabilistic Unsupervised Learning}}
+
+\section*{$Probabilistic\:Perspective\:of\:
+Learning$}
+\subsubsection*{$Probabilistic\:Unsupervised\:Learning$}
 یکی از دسته مسائل یادگیری که پیش تر با آن آشنا شده اید مسائل
 \lr{unsupervised}
 هستند. برای این دسته از مسائل نیز میتوان یک دیدگاه احتمالاتی داشت. برای مثال اگر با دیدگاه احتمالاتی به مسئله خوشه بندی نگاه کنید میتوان فرض کرد که هر کدام از خوشه های ما از توزیع های احتمالاتی پیروی میکنند و با استفاده از داده ها به توزیع مدنظر رسید آنگاه هر دیتای جدیدی را میتوان با استفاده از توزیع هایی که بدست آورده ایم به یکی از خوشه‌ها تخصیص داد.
 
-\includegraphics[width=\textwidth]{figs/GaussianMixtureModel.jpeg}
+\begin{figure}[h]
+    \centering
+    \includegraphics[width= 0.8\textwidth]{figs/GaussianMixtureModel.jpeg}
+    \caption{فرض قرار دادن یک توضیع $gaussian$ در دیتا}
+    \label{fig:gaussian_mixture_model}
+\end{figure}
 
-\subsubsection*{\lr{Generative Approach}}
+\subsubsection*{$Generative\:Approach$}
 دیدگاهی است که در آن فرض میکنیم که در ساختار داده‌ها توزیع 
 \lr{p}
 را داریم و بدنبال یادگرفتن توزیع 
@@ -35,12 +41,13 @@
 میرویم تا بتوانیم کارهایی از قبیل تولید داده انجام دهیم. 
 \href{http://cs231n.stanford.edu/slides/2017/cs231n_2017_lecture13.pdf}{\lr{more information}}
 
-\subsection*{انواع}
+
+\subsection*{رویکردهای اصلی $density\:estimation$}
 دو دسته رویکرد برای این نوع تخمین وجود دارد.
 \begin{itemize}
     \item \lr{parametric}:
     موردی که فعلا مورد بحث در کورس است و با تخمین پارامترهای توزیع سرکار دارد.
-    \item \lr{non-parametric}
+    \item \lr{non-parametric} هیچ مدل پارامتری خاصی در نظر گرفته نمی شود.
 \end{itemize}
 در 
 \lr{parametric}
@@ -52,15 +59,40 @@ $\theta$
 \lr{random variable}
 در نظر میگیرند و بدنبال بدست آوردن تخمینی از توزیع آن هستند
 (\lr{MAP, Bayesian Estimator}).
+\\
+\\
+فرض کنید فضای یک بعدی زیر را همراه توضیعی داریم:
+\begin{figure}[h]
+    \centering
+    \includegraphics[width=0.7\textwidth]{figs/ExNormDist.png}
+    \label{fig:your_label}
+\end{figure}
 
-\section*{\lr{MLE}}
+ما توضیع را نمیدانیم ولی یک خانواده را فرض و میخواهیم از میان آنها توضیعی از میان آن خانواده بخصوص که سمپل ها ازش $generate$ شدن را پیدا کنیم.
+\\
+\\
+خانواده توضیع نرمال را در نظر میگیریم و پارامتر هاش رو تغییر میدیم:
+
+\begin{figure}[h]
+    \centering
+    \includegraphics[width=0.8\textwidth]{figs/normalDistMLE.png}
+    \label{fig:your_label}
+\end{figure}
+
+\begin{figure}[h]
+    \centering
+    \includegraphics[width=0.8\textwidth]{figs/normalDistMLE2.png}
+    \label{fig:your_label}
+\end{figure}
+
+
+\section*{$MLE$}
 فرض کنید دسته ای از سمپل ها به شکل
 $D = \{x^{(1)}, x^{(2)}, ..., x^{(n)}\}$
 داریم. همچنین فرض کنید خانواده توزیع نرمال را داشته باشیم در شرایطی که واریانس اعضا ثابت باشد و تنها پارامتری که بین اعضا متفاوت است 
 $\mu$
 باشد.
 
-\includegraphics[width=\textwidth]{figs/normalDistMLE.png}
 
 حال بدنبال بهترین توزیع نرمالی هستیم که به این داده ها فیت شود. فرض دیگری که میکنیم 
 \lr{i.i.d}
@@ -79,7 +111,7 @@ $\mu$
 
 \includegraphics[width=\textwidth]{figs/Lograithm.png}
 
-\subsection*{مثال گسسته}
+\subsection*{مثال $Bernoulli$ - گسسته}
 در این مثال فرض کنید که آزمایش 
 \lr{N}
 بار پرتاب یک سکه را داریم بصورتی که 
@@ -98,7 +130,11 @@ $\theta$
 حال باید مقدار اپتیمال را بدست آوریم.
 \[\frac{\partial\, ln\,p(D|\theta)}{\partial\theta} = 0 \xrightarrow{}
     \theta_{ML} = \frac{\Sigma_{i=1}^{N} x^{(i)}}{N} = \frac{m}{N}\]
-\subsection{مثال پیوسته}
+
+ولی این تخمین تخمین مناسبی نیست زیرا حالتی ممکن است پیش بیاد که سمپل ما مثال 3 از 3 بار رو آمده باشد و خب با تخمین 1 میشود که خب مناسب نیست. در اصطلاح به این حالت \lr{Overfitting} میگویند که بعدا با آشنا میشویم.
+
+    
+\subsection{مثال $Gaussian$ - پیوسته}
 این بار بر روی خانواده توزیع نرمال با ثابت در نظر گرفتن پارامتر واریانس بدنبال تخمینی برای 
 $\mu$
 هستیم.
