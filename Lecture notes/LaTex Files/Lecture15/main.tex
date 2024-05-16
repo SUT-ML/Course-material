@@ -1,0 +1,177 @@
+\documentclass[12pt]{article}
+\input{etc/cmd}
+
+\begin{document}
+\fontsize{12pt}{14pt}\selectfont
+
+\input{etc/head}
+
+
+\section*{$Neural\:Networks$}
+مدل های اولیه ریاضیاتی که شکل گرفتند بر اساس عملکرد سلول های عصبی مغز انسان بودند.
+
+\includegraphics[width= 0.8\textwidth]{figs/model1.png}
+
+پس از این مدل های اولیه طراحی دیگری پیش آمد که آستانه ای که میخواهند در نورون طراحی شده چک کنند را به شکل بایاس به نورون پاس بدهند و علامت نتیجه را به عنوان خروجی مطرح کنند.
+
+\includegraphics[width= 0.8\textwidth]{figs/model2.png}
+
+
+این تغییر ما را به سمت طراحی مدل 
+$perceptron$
+میبرد. حال که مدل و فرم کلی این روش را میدانیم به سراغ الگوریتم یادگیری آن میرویم.
+\subsection*{$learning\:algorithms$}
+\subsubsection*{$perceptron$}
+
+\includegraphics[width= 0.8\textwidth]{figs/perceptrion_la.png}
+
+$update\:rule$
+
+\includegraphics[width= 0.8\textwidth]{figs/perceptron_update_rule.png}
+
+
+\subsubsection*{$ADALINE$}
+$update\:rule$
+
+
+\includegraphics[width= 0.8\textwidth]{figs/adaline_update_rule.png}
+
+
+یکی از راهکار های افزایش دقت مدل ها گسترش مدل ها با استفاده از اضافه کردن لایه های پنهان است.
+اینجا با مفهوم 
+$feed\:forward$
+آشنا میشویم که دیتا ورودی را میگیرد و از لایه اول شروع میکند و همینطور لایه به لایه محاسبات را انجام میدهد و به خروجی ختم میشود. یکی از مدل های معروف این دسته از مدل ها 
+$multi\:layer\:perceptron$
+است.
+
+\includegraphics[width= 0.8\textwidth]{figs/MLP.png}
+
+
+یکی از ویژگی های خوبی که ما را تشویق به استفاده از شبکه های عصبی میکند این است که هر لایه نمایانگر دسته ای از فیچر ها است و میتواند معنی دار باشد و ما از این اطلاعات بدست آمده در طول یادگیری میتوانیم استفاده کنیم.
+
+\subsection*{$Sigmoid$}
+عامل غیرخطی کننده ای که در مدل بالا میتوانید مشاهده کنید 
+$activation\:function$
+نام دارند که یکی از پرکاربردترین آنها تابع 
+$sigmoid$
+است.
+
+\includegraphics[width= 0.8\textwidth]{figs/sigmoid.png}
+
+
+\subsection*{$BackPropagation$}
+بیاید فرض کنیم که از روش 
+$gradient\:descent$
+برای اپدیت کردن پارامترها استفاده میکنیم. در این روش همانطور که به خاطر دارید به گرادیان نیاز داریم. اما پیچیدگی که در شبکه های عصبی داریم اینجاست که توابعی که در خروجی از نورون استفاده میکنیم در بحث مشتق پذیری دجار مشکل هستند و دیگر مساله بهینه کردن محسبات برای حساب گرادیان است.
+
+\includegraphics[width= 0.8\textwidth]{figs/img1.png}
+
+
+و بنابر الگوریتم داریم 
+
+\includegraphics[width= 0.8\textwidth]{figs/img2.png}
+
+تا هنگامی که 
+$J$
+همگرا شود.
+
+\subsubsection*{$Chain\:Rule$}
+قانونی است که در فرایند مشتق گیری و محاسبه گرادیان مورد استفاده قرار میگیرد.
+
+\includegraphics[width= 0.8\textwidth]{figs/chainRule.png}
+
+اتفاقی که وقتی میخواهیم توی شبکه های عصبی مشتق بگیریم در یک نورون می افتد بدین شکل است.
+
+\includegraphics[width= 0.8\textwidth]{figs/multipath_chainrule.png}
+
+چیزی که ما برای الگوریتممان نیاز داریم نحوه بدست آوردن 
+\[
+\frac{dJ}{dw_{ij}^{[k]}}
+\]
+است.
+
+حال یک شبکه عصبی را در نظر بگیرید که 
+$l - 1$
+لایه نهان دارد. ورودی های این شبکه را به شکل 
+$a^{[0]}$
+نمایش میدهیم و خروجی آن را به فرمت 
+$a^{[l]}$
+معرفی میکنیم. 
+تابع 
+$f$
+هم نمایانگر 
+$activation\:function$
+ها است.
+
+\includegraphics[width=0.8 \textwidth]{figs/img3.png}
+
+حال طبق قاعده زنجیره ای داریم.
+
+\[
+\frac{\partial loss}{\partial w_{ji}^{[l]}} = \frac{\partial loss}{\partial a_{j}^{[l]}} \frac{\partial a_{j}^{[l]}}{\partial w_{ji}^{l}}
+\]
+
+مشتق خروجی نسبت به وزن های لایه اخر چیزی است که به راحتی با استفاده از مشتق 
+$activation\:function$
+و مشتق ورودی این تابع نسبت به وزن های این لایه محاسبه میشود.
+
+\[
+\frac{\partial a^{[l]}}{\partial w_{ji}^{[l]}} = f'(z_{j}^{[l]}) \frac{\partial z_{j}^{[l]}}{\partial w_{ji}^{l}} = f'(z_{j}^{[l]})a_{i}^{l - 1}
+\]
+
+پس در نهایت برای لایه اخر داریم.
+
+\[
+\frac{\partial loss}{\partial w_{ji}^{l}} = \frac{\partial loss}{\partial a_{j}^{[l]}} f'(z_{j}^{[l]}) a_{i}^{[l - 1]}
+\]
+
+و اما گرادیان گیری در لایه های قبلی آیا به راحتی لایه اخر است؟
+
+\[
+\frac{\partial loss}{\partial w_{ji}^{[l]}} = \frac{\partial loss}{\partial z_{j}^{[l]}} \frac{\partial z_{j}^{[l]}}{\partial w_{ji}^{[l]}} = \frac{\partial loss}{\partial z_{j}^{[l]}} a_{i}^{[l -1]}
+\]
+
+حال چگونه باید برای لایه های درونی این مشتق را بدست آورد؟
+
+\[
+\frac{\partial loss}{\partial z_{i}^{[l - 1]}}
+\]
+
+حال اگر از مواردی که بالاتر مطرح شد استفاده کنیم به این نتیجه میرسیم که برای محاسبه این مشتق نیازمند مشتق های لایه های بالاتر بصورت بازگشتی هستیم.
+
+\[
+\frac{\partial loss}{\partial z_{i}^{[l - 1]}} = \frac{\partial a_{i}^{[l - 1]}}{\partial z_{i}^{[l - 1]}} \Sigma_{j = 1}^{d^{[l]}} \frac{\partial loss}{\partial z_{j}^{[l]}} \times \frac{\partial z_{j}^{[l]}}{\partial a_{i}^{[l - 1]}}
+\]
+
+که نتیجتا داریم.
+
+\[
+= f'(z_{i}^{[l-1]}) \Sigma_{j = 1}^{d^{[l]}} \frac{\partial loss}{\partial z_{j}^{[l]}} \times w_{ji}^{[l]}
+\]
+
+حال که این روابط را بدست آوردیم به سراغ مفهوم 
+$backpropagation$
+میرویم.
+
+\[
+\frac{\partial loss}{\partial w_{ji}^{[l]}} = \frac{\partial loss}{\partial z_{j}^{[l]}} \times \frac{\partial z_{j}^{[l]}}{\partial w_{ji}^{[l]}}
+\]
+
+\[
+= \delta_{j}^{[l]} \times a_{i}^{[l-1]}
+\]
+
+همانطور که در تصویر پایین هم میتوانید مشاهده کنید برای اینکه مشتق نسبت به یکی از وزن ها را بیابیم نیازمند اطلاعاتی از لایه های بالاتر نیاز داریم که سبب میشود تا ما مجبور باشیم برای محاسبه گرادیان یک مرحله 
+$feedforward$
+تا انتهای شبکه بریم و سپس از انتها شروع به مشتق گرفتن بکنیم که این عمل تحت عنوان 
+$backpropagation$
+شناخته میشود.
+
+\[
+\delta_{j}^{[l]} = \frac{\partial loss}{\partial z_{j}^{[l]}}
+\]
+
+\[
+\delta_{i}^{[l-1]} = f'(z_{i}^{[l-1]}) \Sigma_{j=1}^{d^{[l]}} \delta_{j}^{[l]} \times w_{ji}^{[l]}
+\]
+\end{document}
