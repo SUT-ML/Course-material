@@ -1,0 +1,53 @@
+\section{درخت تصمیم}
+
+یافتن درخت تصمیم بهینه یک مسئله $\text{\begin{latin}NP-Complete\end{latin}}$ است و برای آموزش آن‌ها از روش‌های حریصانه\LTRfootnote{greedy} استفاده می‌کنیم.
+برای انجام این کار به روش عمل می‌کنیم که در هر مرحله متغیرها را به گونه‌ای که برمی‌گزینیم تا بهترین تقسیم‌بندی را داشته باشیم. فضای فرضیه\LTRfootnote{hypothesis space} به گونه‌ای است که می‌تواند ویژگی‌های $\text{\begin{latin}boolean\end{latin}}$ را به صورت ترکیب فصلی از ترکیب‌های عطفی\LTRfootnote{disjunction of conjuctions} داده‌ها را به دسته‌های کوچک‌تر تفسیم کند. 
+
+
+\subsection{الگوریتم $ID3$}
+الگوریتم $\text{\begin{latin}ID3\end{latin}}$\LTRfootnote{Iterative Dichotomiser 3} در سال ۱۹۸۶ توسط راس کوئینلن\LTRfootnote{Ross Quinlan} معرفی شد. این الگوریتم به روش حریصانه داده‌ها را به صورت بازگشتی به دسته‌های کوچک‌تر تقسیم می‌کند و تا زمانی که تمامی‌ داده‌های درون یک زیردسته دارای برچسب مشترک نباشند و یا ویژگی‌هایی برای تقسیم‌بندی جدید وجود نداشته باشد ادامه می‌دهیم. در هر تقسیم‌بندی به گونه‌ای عمل می‌کنیم که میزان کسب اطلاعات بیشینه باشد و عدم انتروپی یا همان عدم قطعیت به بیشترین مقدار ممکن کاهش یابد. برای بکارگیری مقدار پیوسته در این الگوریتم باید ابتدا آن‌ها را گسسته کنیم. نحوه عملکرد این الگوریتم به شرح زیر می‌باشد:
+\begin{algorithm}[!h]
+\caption{$\text{\begin{latin}ID3\end{latin}}$}
+\label{id3}
+\begin{latin}
+\begin{algorithmic}[1]
+\REQUIRE Examples, Target\_Attribute, Attributes
+%\ENSURE A set $C$ of unit disks that cover $P$.
+\STATE Create a root node for the tree
+\IF{all examples are positive}
+    \STATE \textbf{return} the single-node tree Root, with label = + 
+\ENDIF
+\IF{all examples are negative}
+    \STATE \textbf{return} the single-node tree Root, with label = - 
+\ENDIF
+\IF{number of predicting attributes is empty}
+    \STATE \textbf{return} Root, with label = most common value of the target attribute in the examples
+\ELSE
+    \STATE $A$ = The Attribute that best classifies examples 
+    \STATE Testing attribute for Root = $A$
+    \FORALL{possible values, $v_i$, of $A$}
+        \STATE Add a new tree branch below Root, corresponding to the test $A=v_i$
+        \STATE Let Examples($v_i$) be the subset of examples that have the value for $A$
+        \IF{Examples($v_i$) is empty}
+            \STATE below this new branch add a leaf node with label = most common target value in the examples
+        \ELSE
+            \STATE below this new branch add subtree \textbf{ID3}(Examples($v_i$), Target\_Attribute, Attributes - $\{A\}$)
+        \ENDIF
+    \ENDFOR
+\ENDIF
+\STATE \textbf{return} Root
+\end{algorithmic}
+\end{latin}
+\end{algorithm}
+
+الگوریتم $\text{\begin{latin}ID3\end{latin}}$ از بیش‌برازش رنج می‌برد و با کوچک بودن مجموعه دادگان و یا وجود نویز این پدیده تشدید می‌شود. همچنین ویژگی‌هایی که مقادیر ممکن زیادی دارند نسبت به ویژگی‌های دیگر، حتی اگر حاوی اطلاعات بیشتری باشند، ترجیح داده می‌شوند. الگوریتم‌هایی ارائه شدند که آثار منفی این موارد را تا حدی کاهش دهند.
+الگوریتم \href{https://en.wikipedia.org/wiki/C4.5_algorithm}{$\text{\begin{latin}C4.5\end{latin}}$} تلاش می‌کند تا این مشکلات را تا میزانی برطرف کند. برای حل مسائل رگرسیون به کمک درختان تصمیم الگوریتم \href{https://en.wikipedia.org/wiki/Decision_tree_learning}{$\text{\begin{latin}CART\end{latin}}$} وجود دارد که به جای استفاده از کسب اطلاعات از معیار $\text{\begin{latin}impurity Gini\end{latin}}$ استفاده می‌کند. 
+
+
+\subsection{بیش‌برازش در درختان تصمیم}
+برای پیش‌گیری از بیش‌برازش در درختان تصمیم روش‌های متعددی وجود دارد که در این بخش به برخی از مهم‌ترین روش‌های موجود می‌پردازیم.
+\begin{enumerate}
+    \item توقف زودهنگام\LTRfootnote{early stopping}: در این روش هرگاه ادامه الگوریتم کمک شایانی به بهبود الگوریتم نکند، و از نظر آماری تاثیر چندانی نداشته باشد اجرای الگوریتم را متوقف می‌کنیم.
+    \item هرس کردن\LTRfootnote{pruning}: در این روش ابتدا یک درخت کامل را می‌سازیم و سپس با هرس کردن این درخت تا هنگامی که عملکرد آن بر روی داده‌های صحت‌سنجی\LTRfootnote{validation} منجر به بهبود نشود، اقدام به هرس آن می‌کنیم. در عمل این روش عملکرد بهتری نسبت به توقف زودهنگام دارد.
+    \item یادگیری گروهی\LTRfootnote{ensemble learning}: روش دیگر برای بهبود عملکرد درخت‌های تصمیم استفاده از یادگیری گروهی است. جنگل‌های تصادفی\LTRfootnote{random forest} با استفاده از چند درخت‌ تصمیم به صورت همزمان تلاش می‌کنند تا نتایج بهتری کسب کنند. برای مسائل دسته‌بندی با رای‌گیری و برای مسائل رگرسیون با میانگین‌گیری میان خروجی درخت‌های مختلف سعی می‌کنیم تا به خروجی‌های دقیق‌تری برسیم. در یادگیری ماشین روش‌های یادگیری گروهی بسیار کارمد هستند و از آن‌ها زیاد استفاده می‌شود و شما در جلسات آینده بیشتر با آن‌ها آشنا می‌شود.
+\end{enumerate}
